@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__.'/../../../../lib/vendor/gelf-php/GELFMessage.php';
-require_once __DIR__.'/../../../../lib/vendor/gelf-php/GELFMessagePublisher.php';
-
 /**
  * @author Yohan Giarelli <yohan@frequence-web.fr>
  */
