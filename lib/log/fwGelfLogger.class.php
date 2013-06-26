@@ -22,6 +22,11 @@ class fwGelfLogger extends sfLogger
   protected $publisher;
 
   /**
+   * @var string
+   */
+  protected $facility;
+
+  /**
    * @{inheritDoc}
    */
   public function __construct(sfEventDispatcher $dispatcher, $options = array())
@@ -32,6 +37,11 @@ class fwGelfLogger extends sfLogger
       $this->options['host'],
       isset($this->options['port']) ? $this->options['port'] : GELFMessagePublisher::GRAYLOG2_DEFAULT_PORT
     );
+
+    if (isset($options['facility']))
+    {
+      $this->facility = $options['facility'];
+    }
   }
 
   /**
@@ -45,7 +55,20 @@ class fwGelfLogger extends sfLogger
       ->setShortMessage($log)
       ->setLevel($priority)
       ->setTimestamp(time())
-      ->setHost(gethostname());
+      ->setHost(gethostname())
+      ->setFacility($this->facility);
+
+    try
+    {
+      $request = sfContext::getInstance()->getRequest();
+      if ($request instanceof sfWebRequest)
+      {
+        $pathInfos = $request->getPathInfoArray();
+        $message->setHost($pathInfos['HTTP_HOST']);
+        $message->setAdditional('request_parameters', $request->getRequestParameters());
+      }
+    }
+    catch (sfException $e) {}
 
     $this->publisher->publish($message);
   }
