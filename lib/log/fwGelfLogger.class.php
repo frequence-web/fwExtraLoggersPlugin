@@ -37,12 +37,12 @@ class fwGelfLogger extends sfLogger
   /**
    * @{inheritDoc}
    */
-  protected function doLog($message, $priority)
+  protected function doLog($log, $priority)
   {
     $message = new GELFMessage;
     $message
-      ->setFullMessage($message)
-      ->setShortMessage($message)
+      ->setFullMessage($log)
+      ->setShortMessage($log)
       ->setLevel($priority)
       ->setTimestamp(time())
       ->setHost(gethostname());
